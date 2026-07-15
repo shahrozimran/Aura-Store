@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - AURA Store</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .legal-content h2 {
+      font-weight: 400;
+      font-size: 1.4rem;
+      margin: 2rem 0 1rem 0;
+      letter-spacing: -0.01em;
+    }
+    .legal-content p {
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+    .legal-content ul {
+      list-style-type: square;
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .legal-content li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dynamic Header -->
+  <header></header>
+
+  <main>
+    <h1 class="page-title">Privacy Policy</h1>
+    
+    <div class="white-container legal-content" style="max-width: 800px; margin: 0 auto; padding: 3rem;">
+      <p style="font-style: italic; margin-bottom: 2rem;">Last Updated: July 15, 2026</p>
+
+      <p>At AURA Store, we respect your privacy and are committed to protecting the personal data you share with us. This Privacy Policy describes how we collect, use, and protect your information when you visit and purchase from our store.</p>
+
+      <h2>1. Information We Collect</h2>
+      <p>We collect information to provide a better shopping experience and process your orders safely. The types of data collected include:</p>
+      <ul>
+        <li><strong>Account Information:</strong> Your username, email address, and encrypted password when you register.</li>
+        <li><strong>Transaction & Shipping Data:</strong> Shipping address, recipient name, contact details, and records of products purchased.</li>
+        <li><strong>Session & Cart State:</strong> Browser storage records (localStorage) containing token logs and item lists in your shopping cart.</li>
+      </ul>
+
+      <h2>2. How We Use Your Information</h2>
+      <p>Your details are used strictly for service fulfillment and operational maintenance, including:</p>
+      <ul>
+        <li>Processing, verifying, and shipping your orders.</li>
+        <li>Authenticating your account login sessions.</li>
+        <li>Analyzing store performance to improve search navigation and page responsiveness.</li>
+      </ul>
+
+      <h2>3. Data Storage & Security</h2>
+      <p>We prioritize the safety of your information. Passwords are securely hashed using industry-standard bcrypt encryption before storage. Since we use a dynamic in-memory database system for development, mock orders and test profiles are isolated and reset periodically to maintain clean test environments.</p>
+
+      <h2>4. Sharing with Third Parties</h2>
+      <p>We do **not** sell, rent, or trade your personal information. Data is shared with external partners only when necessary to process fulfillment operations (such as forwarding shipping details to delivery carriers).</p>
+
+      <h2>5. Cookies & Browser Storage</h2>
+      <p>We use standard HTML5 LocalStorage to hold your login credentials (JWT tokens) and shopping cart items. This information is stored client-side in your own browser and can be cleared at any time by logging out or emptying your browser cache.</p>
+
+      <h2>6. Contact Us</h2>
+      <p>If you have any questions or feedback regarding this Privacy Policy, please reach out to us at: <strong>privacy@aurastore.com</strong></p>
+    </div>
+  </main>
+
+  <!-- Dynamic Footer -->
+  <footer></footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
