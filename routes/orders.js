@@ -21,8 +21,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
     let calculatedTotal = 0;
     const processedItems = [];
+    const productsToUpdate = [];
 
-    // Verify each product and its price, adjust stock
+    // PASS 1: Verify all products exist and have sufficient stock
     for (const item of items) {
       const product = await Product.findById(item.product);
       if (!product) {
@@ -33,17 +34,24 @@ router.post('/', authMiddleware, async (req, res) => {
         return res.status(400).json({ message: `Insufficient stock for product: ${product.title}. Only ${product.stock} items left.` });
       }
 
-      // Add to processed items with database verified price
+      // Add to processed items with snapshotted fields
       processedItems.push({
         product: product._id,
+        title: product.title,
+        imageUrl: product.imageUrl,
         quantity: item.quantity,
         price: product.price
       });
 
       calculatedTotal += product.price * item.quantity;
       
-      // Update stock
+      // Track updated product state for Pass 2
       product.stock -= item.quantity;
+      productsToUpdate.push(product);
+    }
+
+    // PASS 2: Save the updated stock levels (all-or-nothing check succeeded)
+    for (const product of productsToUpdate) {
       await product.save();
     }
 
@@ -57,10 +65,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     await order.save();
 
-    // Populate product titles for response
-    const populatedOrder = await Order.findById(order._id).populate('items.product', 'title imageUrl');
-
-    res.status(201).json(populatedOrder);
+    res.status(201).json(order);
   } catch (error) {
     console.error('Create Order Error:', error);
     res.status(500).json({ message: 'Server error processing order' });
@@ -72,6 +77,7 @@ router.post('/', authMiddleware, async (req, res) => {
 // @access  Private
 router.get('/', authMiddleware, async (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     const orders = await Order.find({ user: req.userId })
       .populate('items.product', 'title imageUrl')
       .sort({ createdAt: -1 });

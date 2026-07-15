@@ -114,13 +114,20 @@ function initializeCommonUI() {
     const user = getCurrentUser();
     header.innerHTML = `
       <div class="header-container">
-        <a href="index.html" class="logo">AURA <span>Store</span></a>
-        <nav>
+        <nav class="header-nav-left">
           <ul class="nav-links">
-            <li><a href="index.html" class="nav-link" data-page="shop">Shop</a></li>
             <li id="nav-orders" class="${isLoggedIn() ? '' : 'hidden'}">
               <a href="orders.html" class="nav-link" data-page="orders">My Orders</a>
             </li>
+          </ul>
+        </nav>
+        
+        <div class="header-logo-center">
+          <a href="index.html" class="logo">AURA <span>Store</span></a>
+        </div>
+        
+        <div class="header-actions-right">
+          <ul class="nav-links">
             <li id="nav-auth-link" class="${isLoggedIn() ? 'hidden' : ''}">
               <a href="auth.html" class="nav-link" data-page="auth">Login</a>
             </li>
@@ -128,12 +135,12 @@ function initializeCommonUI() {
               <a href="#" class="nav-link" id="logout-btn">Logout</a>
             </li>
           </ul>
-        </nav>
-        <div class="nav-actions">
-          <a href="cart.html" class="cart-icon" title="View Cart">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            <span class="cart-badge" id="cart-badge">0</span>
-          </a>
+          <div class="nav-actions">
+            <a href="cart.html" class="cart-icon" title="View Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span class="cart-badge" id="cart-badge">0</span>
+            </a>
+          </div>
         </div>
       </div>
     `;

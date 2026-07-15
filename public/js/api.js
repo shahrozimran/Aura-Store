@@ -48,10 +48,13 @@ const api = {
   },
 
   // Products
-  async getProducts(category = 'all', sort = '') {
+  async getProducts(category = 'all', sort = '', search = '') {
     let url = `${API_URL}/products?category=${category}`;
     if (sort) {
       url += `&sort=${sort}`;
+    }
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
     }
     const res = await fetch(url);
     const data = await res.json();

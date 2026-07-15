@@ -49,16 +49,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Items HTML
       let itemsHtml = '';
       order.items.forEach(item => {
-        // Fallback for deleted products in seed DB tests
-        const title = item.product ? item.product.title : 'Deleted Product';
-        const imgUrl = item.product ? item.product.imageUrl : 'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=600&auto=format&fit=crop';
+        // Use snapshotted title/imageUrl with fallback to product object if missing on old records
+        const title = item.title || (item.product ? item.product.title : 'Deleted Product');
+        const imgUrl = item.imageUrl || (item.product ? item.product.imageUrl : 'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=600&auto=format&fit=crop');
         
+        // Wrap title in a link back to the product detail page if the product exists in the catalog
+        const linkStart = item.product ? `<a href="product.html?id=${item.product._id || item.product}" style="color: inherit; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">` : '';
+        const linkEnd = item.product ? '</a>' : '';
+
         itemsHtml += `
           <div class="order-item-row">
             <div class="order-item-info">
               <img src="${imgUrl}" class="order-item-img" alt="${title}" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FAF8F5/222222?text=${encodeURIComponent(title)}'">
               <div>
-                <div class="order-item-title">${title}</div>
+                <div class="order-item-title">${linkStart}${title}${linkEnd}</div>
                 <div class="order-item-qty-price">Qty: ${item.quantity} × $${item.price.toFixed(2)}</div>
               </div>
             </div>

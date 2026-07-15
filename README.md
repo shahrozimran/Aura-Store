@@ -62,7 +62,6 @@ A premium, full-stack e-commerce application designed with modern, clean aesthet
 ├── .env                    # Environment configuration file
 ├── db.js                   # Mongoose Database connection setup
 ├── package.json            # Node project configuration & dependencies
-├── seed.js                 # Automatic seed generator (40 Products, 1 Test User, 1 Mock Order)
 ├── server.js               # Entry point of the Express Server
 └── start-mongo.bat         # Helper shortcut script to run MongoDB locally
 ```
@@ -110,22 +109,19 @@ The server will start and output the following connection logs:
 ```text
 MongoDB Connected: localhost
 Database Name: minimalist-store
-Database contains less than 41 products. Re-seeding database...
-Cleared existing products...
-Seeded 40 products successfully.
-Seeding a mock checkout order...
-Mock order seeded successfully.
+Connected to database. Ready to handle requests.
 Server running in development mode on port 5000
 Open http://localhost:5000 in your browser to view the application.
 ```
 
 ---
 
-## 🔑 Test Credentials
+## 🔑 Account Access
 
-The database is seeded with a default user profile to let you test checkout flows and view order history immediately:
-*   **Email**: `test@example.com`
-*   **Password**: `password123`
+All user accounts, profiles, and order histories are self-managed. To test checkout flows and view order history:
+1. Navigate to the **Login / Register** page.
+2. Select **Register** to create a new user account.
+3. Once registered, you will be logged in automatically and can place orders or access your personalized order history dashboard.
 
 ---
 

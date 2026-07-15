@@ -7,12 +7,17 @@ const Product = require('../models/Product');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const { category, sort } = req.query;
+    const { category, sort, search } = req.query;
     let query = {};
 
     // Filtering by category
     if (category && category !== 'all') {
       query.category = { $regex: new RegExp(category, 'i') };
+    }
+
+    // Filter by search query (case-insensitive title match)
+    if (search) {
+      query.title = { $regex: new RegExp(search, 'i') };
     }
 
     let productsQuery = Product.find(query);

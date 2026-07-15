@@ -3,8 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { connectDB } = require('./db');
+// Database models
 const Product = require('./models/Product');
-const seedDB = require('./seed');
 
 // Initialize Express app
 const app = express();
@@ -20,7 +20,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
-app.use('/api/orders', require('./routes/orders'));
+app.use('/api/orders', (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+}, require('./routes/orders'));
 
 // Fallback to index.html for undefined routes (for front-end SPA routing if needed, otherwise served directly)
 app.use((req, res, next) => {
@@ -41,14 +44,7 @@ async function startServer() {
     // Connect to database (either memory server or real mongo)
     await connectDB();
 
-    // Check if database needs seeding
-    const productCount = await Product.countDocuments();
-    if (productCount < 41) {
-      console.log('Database contains less than 41 products (or needs refresh). Re-seeding database...');
-      await seedDB();
-    } else {
-      console.log('Database already has all 40+ products. Skipping seeding.');
-    }
+    console.log('Connected to database. Ready to handle requests.');
 
     // Start server listening
     app.listen(PORT, () => {

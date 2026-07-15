@@ -6,6 +6,14 @@ const orderItemSchema = new mongoose.Schema({
     ref: 'Product',
     required: true
   },
+  title: {
+    type: String,
+    required: [true, 'Product title is required']
+  },
+  imageUrl: {
+    type: String,
+    required: [true, 'Product image URL is required']
+  },
   quantity: {
     type: Number,
     required: true,
