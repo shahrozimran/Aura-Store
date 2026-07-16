@@ -6,21 +6,29 @@ const { connectDB } = require('./db');
 // Database models
 const Product = require('./models/Product');
 
+// Security Middlewares
+const { sanitizeNoSql, apiRateLimiter, securityHeaders } = require('./middleware/security');
+
 // Initialize Express app
 const app = express();
 
-// Middleware
+// Global Security & Request Middlewares
+app.use(securityHeaders);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(sanitizeNoSql);
+
+// General API Rate Limiting (max 100 requests per minute per IP)
+app.use('/api', apiRateLimiter(100, 60000));
 
 // Serve static assets from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API Routes
-app.use('/api/auth', require('./routes/auth'));
+// API Routes (with specific rate limiting)
+app.use('/api/auth', apiRateLimiter(15, 60000), require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
-app.use('/api/orders', (req, res, next) => {
+app.use('/api/orders', apiRateLimiter(30, 60000), (req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
 }, require('./routes/orders'));

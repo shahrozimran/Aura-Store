@@ -50,7 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       let itemsHtml = '';
       order.items.forEach(item => {
         // Use snapshotted title/imageUrl with fallback to product object if missing on old records
-        const title = item.title || (item.product ? item.product.title : 'Deleted Product');
+        const rawTitle = item.title || (item.product ? item.product.title : 'Deleted Product');
+        const title = escapeHTML(rawTitle);
         const imgUrl = item.imageUrl || (item.product ? item.product.imageUrl : 'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=600&auto=format&fit=crop');
         
         // Wrap title in a link back to the product detail page if the product exists in the catalog
@@ -72,13 +73,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       const statusClass = `status-${order.status.toLowerCase()}`;
+      
+      const orderId = escapeHTML(order._id);
+      const shipName = escapeHTML(order.shippingAddress.fullName);
+      const shipAddr1 = escapeHTML(order.shippingAddress.addressLine1);
+      const shipCity = escapeHTML(order.shippingAddress.city);
+      const shipZip = escapeHTML(order.shippingAddress.postalCode);
+      const shipCountry = escapeHTML(order.shippingAddress.country);
 
       orderCard.innerHTML = `
         <div class="order-header">
           <div style="display: flex; gap: 2rem;">
             <div class="order-meta-item">
               <div class="order-meta-label">Order Number</div>
-              <div class="order-meta-value" style="font-family: monospace; font-size: 0.85rem;">${order._id}</div>
+              <div class="order-meta-value" style="font-family: monospace; font-size: 0.85rem;">${orderId}</div>
             </div>
             <div class="order-meta-item">
               <div class="order-meta-label">Date Placed</div>
@@ -100,11 +108,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div style="font-size: 0.9rem; border-left: var(--border-thin); padding-left: 1.5rem;">
             <div class="order-meta-label" style="margin-bottom: 0.5rem;">Shipping Address</div>
-            <div style="font-weight: 500; margin-bottom: 0.25rem;">${order.shippingAddress.fullName}</div>
+            <div style="font-weight: 500; margin-bottom: 0.25rem;">${shipName}</div>
             <div style="color: var(--text-muted); line-height: 1.4;">
-              ${order.shippingAddress.addressLine1}<br>
-              ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}<br>
-              ${order.shippingAddress.country}
+              ${shipAddr1}<br>
+              ${shipCity}, ${shipZip}<br>
+              ${shipCountry}
             </div>
           </div>
         </div>

@@ -135,12 +135,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           const card = document.createElement('div');
           card.className = 'review-card';
           const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+          const username = escapeHTML(rev.username);
+          const comment = escapeHTML(rev.comment);
           card.innerHTML = `
             <div class="review-header">
-              <span class="review-user">${rev.username}</span>
+              <span class="review-user">${username}</span>
               <span class="review-stars">${stars}</span>
             </div>
-            <p class="review-comment">${rev.comment}</p>
+            <p class="review-comment">${comment}</p>
           `;
           reviewsList.appendChild(card);
         });

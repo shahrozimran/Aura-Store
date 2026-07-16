@@ -12,12 +12,18 @@ router.get('/', async (req, res) => {
 
     // Filtering by category
     if (category && category !== 'all') {
-      query.category = { $regex: new RegExp(category, 'i') };
+      // Escape category regex to prevent any injection
+      const cleanCategory = category.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      query.category = { $regex: new RegExp(cleanCategory, 'i') };
     }
 
-    // Filter by search query (case-insensitive title match)
+    // Filter by search query (case-insensitive title match with ReDoS protection)
     if (search) {
-      query.title = { $regex: new RegExp(search, 'i') };
+      // Limit query length to 80 characters to prevent memory/CPU abuse
+      const cleanSearch = search.trim().slice(0, 80);
+      // Escape all special regular expression symbols
+      const escapedSearch = cleanSearch.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      query.title = { $regex: new RegExp(escapedSearch, 'i') };
     }
 
     let productsQuery = Product.find(query);

@@ -42,7 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Debounced Auto-suggestions Logic
   searchInput.addEventListener('input', () => {
     clearTimeout(debounceTimer);
-    const query = searchInput.value.trim();
+    let query = searchInput.value;
+    
+    // Prevent excessive search payload size
+    if (query.length > 80) {
+      query = query.slice(0, 80);
+      searchInput.value = query;
+    }
+    
+    query = query.trim();
 
     if (query.length < 1) {
       searchSuggestions.innerHTML = '';
@@ -71,13 +79,15 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // Limit to max 5 suggestion results
       products.slice(0, 5).forEach(prod => {
+        const title = escapeHTML(prod.title);
+        const category = escapeHTML(prod.category);
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         item.innerHTML = `
-          <img class="suggestion-img" src="${prod.imageUrl}" alt="${prod.title}" onerror="this.onerror=null; this.src='https://placehold.co/50x50/FAF8F5/222222?text=${encodeURIComponent(prod.title)}'">
+          <img class="suggestion-img" src="${prod.imageUrl}" alt="${title}" onerror="this.onerror=null; this.src='https://placehold.co/50x50/FAF8F5/222222?text=${encodeURIComponent(title)}'">
           <div class="suggestion-details">
-            <span class="suggestion-title">${prod.title}</span>
-            <span class="suggestion-cat">${prod.category}</span>
+            <span class="suggestion-title">${title}</span>
+            <span class="suggestion-cat">${category}</span>
           </div>
         `;
         item.addEventListener('click', () => {
@@ -150,16 +160,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     products.forEach(product => {
+      const title = escapeHTML(product.title);
+      const category = escapeHTML(product.category);
       const card = document.createElement('a');
       card.href = `product.html?id=${product._id}`;
       card.className = 'product-card';
       card.innerHTML = `
         <div class="product-image-container">
-          <img src="${product.imageUrl}" class="product-image" alt="${product.title}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/600x600/FAF8F5/222222?text=${encodeURIComponent(product.title)}'">
+          <img src="${product.imageUrl}" class="product-image" alt="${title}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/600x600/FAF8F5/222222?text=${encodeURIComponent(title)}'">
         </div>
         <div class="product-info">
-          <span class="product-cat">${product.category}</span>
-          <h3 class="product-title">${product.title}</h3>
+          <span class="product-cat">${category}</span>
+          <h3 class="product-title">${title}</h3>
           <span class="product-price">$${product.price.toFixed(2)}</span>
         </div>
       `;

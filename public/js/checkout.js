@@ -32,12 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemTotal = item.price * item.quantity;
       subtotal += itemTotal;
 
+      const title = escapeHTML(item.title);
       const reviewRow = document.createElement('div');
       reviewRow.className = 'summary-row';
       reviewRow.style.fontSize = '0.9rem';
       reviewRow.style.marginBottom = '0.75rem';
       reviewRow.innerHTML = `
-        <span style="color: var(--text-muted);">${item.title} (x${item.quantity})</span>
+        <span style="color: var(--text-muted);">${title} (x${item.quantity})</span>
         <span>$${itemTotal.toFixed(2)}</span>
       `;
       itemsListEl.appendChild(reviewRow);

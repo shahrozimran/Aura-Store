@@ -27,12 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemTotal = item.price * item.quantity;
       subtotal += itemTotal;
 
+      const title = escapeHTML(item.title);
       const itemRow = document.createElement('div');
       itemRow.className = 'cart-item';
       itemRow.innerHTML = `
-        <img src="${item.imageUrl}" class="cart-item-img" alt="${item.title}" onerror="this.onerror=null; this.src='https://placehold.co/120x120/FAF8F5/222222?text=${encodeURIComponent(item.title)}'">
+        <img src="${item.imageUrl}" class="cart-item-img" alt="${title}" onerror="this.onerror=null; this.src='https://placehold.co/120x120/FAF8F5/222222?text=${encodeURIComponent(title)}'">
         <div class="cart-item-details">
-          <h3 class="cart-item-title">${item.title}</h3>
+          <h3 class="cart-item-title">${title}</h3>
           <p class="cart-item-category">Category</p>
           <div class="cart-item-price">$${item.price.toFixed(2)}</div>
         </div>

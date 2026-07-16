@@ -204,3 +204,16 @@ function initializeCommonUI() {
 
 // Run UI construction when DOM loads
 document.addEventListener('DOMContentLoaded', initializeCommonUI);
+
+// HTML escaping utility to protect against DOM XSS
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  if (typeof str !== 'string') str = String(str);
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+window.escapeHTML = escapeHTML;
