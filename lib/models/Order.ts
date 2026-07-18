@@ -17,11 +17,17 @@ export interface IShippingAddress {
 }
 
 export interface IOrder extends mongoose.Document {
-  user: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId;
   items: IOrderItem[];
   totalAmount: number;
-  shippingAddress: IShippingAddress;
+  shippingAddress?: IShippingAddress;
   status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+  channel: 'Web' | 'POS';
+  paymentMethod: 'Cash' | 'Card' | 'Split' | 'Other';
+  registerSessionId?: mongoose.Types.ObjectId;
+  cashierId?: mongoose.Types.ObjectId;
+  amountPaidCash?: number;
+  amountPaidCard?: number;
   createdAt: Date;
 }
 
@@ -55,7 +61,7 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false
   },
   items: [orderItemSchema],
   totalAmount: {
@@ -64,11 +70,11 @@ const orderSchema = new mongoose.Schema({
     min: [0, 'Total amount cannot be negative']
   },
   shippingAddress: {
-    fullName: { type: String, required: true },
-    addressLine1: { type: String, required: true },
-    city: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true }
+    fullName: { type: String, required: false },
+    addressLine1: { type: String, required: false },
+    city: { type: String, required: false },
+    postalCode: { type: String, required: false },
+    country: { type: String, required: false }
   },
   status: {
     type: String,
@@ -76,6 +82,28 @@ const orderSchema = new mongoose.Schema({
     enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
     default: 'Pending'
   },
+  channel: {
+    type: String,
+    enum: ['Web', 'POS'],
+    default: 'Web'
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['Cash', 'Card', 'Split', 'Other'],
+    default: 'Card'
+  },
+  registerSessionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'RegisterSession',
+    required: false
+  },
+  cashierId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false
+  },
+  amountPaidCash: { type: Number, default: 0 },
+  amountPaidCard: { type: Number, default: 0 },
   createdAt: {
     type: Date,
     default: Date.now

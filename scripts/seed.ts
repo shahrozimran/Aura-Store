@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from '../lib/models/Product';
+import InventoryLocation from '../lib/models/InventoryLocation';
 
 dotenv.config();
 
@@ -427,13 +428,61 @@ async function seed() {
   try {
     console.log(`Connecting to database for seeding: ${mongoUri}`);
     await mongoose.connect(mongoUri);
-    console.log('Connected successfully. Cleaning up old products...');
+    console.log('Connected successfully. Cleaning up old collections...');
 
     await Product.deleteMany({});
-    console.log('Deleted existing products. Seeding new 40 catalog items...');
+    await InventoryLocation.deleteMany({});
+    console.log('Deleted existing products and locations.');
 
-    const seeded = await Product.insertMany(products);
-    console.log(`Successfully seeded ${seeded.length} products!`);
+    // Seed default locations
+    console.log('Seeding inventory locations...');
+    const warehouse = await InventoryLocation.create({
+      name: 'Central Warehouse',
+      type: 'Warehouse',
+      address: {
+        addressLine1: '404 Industrial Parkway',
+        city: 'Logistics City',
+        postalCode: '90001',
+        country: 'USA'
+      }
+    });
+
+    const flagshipStore = await InventoryLocation.create({
+      name: 'Aura Flagship Store',
+      type: 'RetailStore',
+      address: {
+        addressLine1: '789 Design Boulevard',
+        city: 'New York',
+        postalCode: '10003',
+        country: 'USA'
+      }
+    });
+
+    console.log(`Created Locations: Warehouse (${warehouse._id}), Retail Store (${flagshipStore._id})`);
+
+    // Map products to locations with barcodes & SKUs
+    const productsWithPOS = products.map((p, index) => {
+      const categoryCode = p.category.toUpperCase().slice(0, 4);
+      const sku = `AUR-${categoryCode}-${String(index + 1).padStart(2, '0')}`;
+      const barcode = `75010203${String(index + 1).padStart(4, '0')}`;
+      
+      // Store inventory is 5-20 units, online is the original stock
+      const storeStock = Math.floor(Math.random() * 16) + 5;
+
+      return {
+        ...p,
+        sku,
+        barcode,
+        stockAtLocations: [
+          { locationId: warehouse._id, stock: p.stock },
+          { locationId: flagshipStore._id, stock: storeStock }
+        ]
+      };
+    });
+
+    console.log('Seeding new 40 catalog items with locations...');
+    const seeded = await Product.insertMany(productsWithPOS);
+    console.log(`Successfully seeded ${seeded.length} products with POS records!`);
 
     await mongoose.disconnect();
     console.log('Database disconnected. Seeding completed.');

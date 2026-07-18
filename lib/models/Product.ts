@@ -7,6 +7,11 @@ export interface IReview {
   createdAt: Date;
 }
 
+export interface ILocationStock {
+  locationId: mongoose.Types.ObjectId;
+  stock: number;
+}
+
 export interface IProduct extends mongoose.Document {
   title: string;
   description: string;
@@ -15,6 +20,9 @@ export interface IProduct extends mongoose.Document {
   imageUrl: string;
   category: string;
   stock: number;
+  sku: string;
+  barcode?: string;
+  stockAtLocations: ILocationStock[];
   reviews: IReview[];
   createdAt: Date;
 }
@@ -31,6 +39,16 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Product title is required'],
     trim: true
+  },
+  sku: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  barcode: {
+    type: String,
+    unique: true,
+    sparse: true
   },
   description: {
     type: String,
@@ -57,6 +75,10 @@ const productSchema = new mongoose.Schema({
     min: [0, 'Stock cannot be negative'],
     default: 10
   },
+  stockAtLocations: [{
+    locationId: { type: mongoose.Schema.Types.ObjectId, ref: 'InventoryLocation' },
+    stock: { type: Number, default: 0, min: 0 }
+  }],
   reviews: [reviewSchema],
   createdAt: {
     type: Date,
