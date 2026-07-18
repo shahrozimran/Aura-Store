@@ -6,6 +6,7 @@ import { use } from 'react';
 import { CartProvider } from '@/context/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import LogoutOverlay from './components/LogoutOverlay';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -33,6 +34,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
+            <LogoutOverlay />
           </CartProvider>
         </AuthProvider>
       </body>

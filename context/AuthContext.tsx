@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AuthUser {
   id: string;
@@ -12,6 +13,7 @@ interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
   loading: boolean;
+  isLoggingOut: boolean;
   login: (email: string, password: string) => Promise<any>;
   register: (username: string, email: string, password: string) => Promise<any>;
   logout: () => void;
@@ -20,9 +22,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
@@ -70,14 +74,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setIsLoggingOut(false);
+      router.push('/');
+    }, 1200);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, isLoggingOut, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

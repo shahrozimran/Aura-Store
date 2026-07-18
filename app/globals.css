@@ -1077,4 +1077,41 @@ footer {
   letter-spacing: 0.02em;
 }
 
+/* Logout Overlay Screen */
+.logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(245, 242, 235, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
 
+.logout-content {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--white);
+  border: var(--border-thin);
+  box-shadow: 0 10px 40px rgba(34, 34, 34, 0.08);
+  max-width: 400px;
+  width: 90%;
+}
+
+.logout-text {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  letter-spacing: 0.02em;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
