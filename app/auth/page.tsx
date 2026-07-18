@@ -66,12 +66,17 @@ function AuthForm() {
 
     try {
       await register(registerUsername.trim(), registerEmail.trim(), registerPassword);
-      setAlert({ message: 'Registration successful! Redirecting...', type: 'success' });
+      setAlert({ message: 'Registration successful! Please log in to continue.', type: 'success' });
+      
+      // Clear inputs
+      setRegisterUsername('');
+      setRegisterEmail('');
+      setRegisterPassword('');
 
+      // Auto-switch to Login tab after a brief delay
       setTimeout(() => {
-        const redirect = searchParams.get('redirect') || '/';
-        router.push(redirect);
-      }, 1000);
+        setActiveTab('login');
+      }, 2000);
     } catch (err: any) {
       setAlert({ message: err.message || 'Registration failed.', type: 'error' });
     }
