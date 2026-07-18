@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
 interface MongooseCache {
   conn: mongoose.Connection | null;
   promise: Promise<mongoose.Connection> | null;
-  mongoServer: MongoMemoryServer | null;
 }
 
 declare global {
@@ -15,7 +13,7 @@ declare global {
 let cached = global.mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null, mongoServer: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 export async function connectDB(): Promise<mongoose.Connection> {
@@ -28,15 +26,12 @@ export async function connectDB(): Promise<mongoose.Connection> {
       bufferCommands: false,
     };
 
-    let mongoUri = process.env.MONGODB_URI;
+    const mongoUri = process.env.MONGODB_URI;
 
     if (!mongoUri) {
-      console.log('No MONGODB_URI found in environment. Initializing in-memory MongoDB server...');
-      if (!cached.mongoServer) {
-        cached.mongoServer = await MongoMemoryServer.create();
-      }
-      mongoUri = cached.mongoServer.getUri();
-      console.log(`In-memory MongoDB server started successfully at ${mongoUri}`);
+      throw new Error(
+        'Please define the MONGODB_URI environment variable inside your .env configuration file.'
+      );
     }
 
     cached.promise = mongoose.connect(mongoUri, opts).then((mongooseInstance) => {
@@ -65,10 +60,6 @@ export async function closeDB() {
     await mongoose.disconnect();
     cached.conn = null;
     cached.promise = null;
-  }
-  if (cached && cached.mongoServer) {
-    await cached.mongoServer.stop();
-    cached.mongoServer = null;
-    console.log('In-memory MongoDB server stopped.');
+    console.log('MongoDB Disconnected.');
   }
 }

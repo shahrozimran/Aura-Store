@@ -180,17 +180,13 @@ export default function POSPage() {
     async function loadCustomers() {
       if (!token) return;
       try {
-        // Query users list, fallback if unavailable
-        const res = await fetch('/api/pos/analytics', {
+        const res = await fetch('/api/pos/customers', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        // We will make a mock fetch to get customers or just mock it locally
-        // Let's seed a few customer profiles locally for demo/Omnichannel CRM links
-        setCustomers([
-          { _id: '6a5bfcca9c20f93429ece8aa', username: 'Jane Doe', email: 'jane@example.com' },
-          { _id: '6a5bfcca9c20f93429ece8ab', username: 'John Smith', email: 'john@example.com' },
-          { _id: '6a5bfcca9c20f93429ece8ac', username: 'Sarah Jenkins', email: 'sarah@example.com' }
-        ]);
+        const data = await res.json();
+        if (res.ok) {
+          setCustomers(data);
+        }
       } catch (err) {
         console.error('Customers load error:', err);
       }

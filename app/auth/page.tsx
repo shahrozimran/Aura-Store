@@ -12,6 +12,15 @@ function AuthForm() {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const redirect = searchParams.get('redirect') || '';
+  const isPOS = redirect.startsWith('/pos');
+
+  useEffect(() => {
+    if (isPOS) {
+      setActiveTab('login');
+    }
+  }, [isPOS]);
+
   // Form states
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -89,26 +98,35 @@ function AuthForm() {
   return (
     <div className="auth-container white-container">
       {/* Tab Selection */}
-      <div className="auth-tabs">
-        <button
-          className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('login');
-            setAlert(null);
-          }}
-        >
-          Login
-        </button>
-        <button
-          className={`auth-tab ${activeTab === 'register' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('register');
-            setAlert(null);
-          }}
-        >
-          Register
-        </button>
-      </div>
+      {!isPOS ? (
+        <div className="auth-tabs">
+          <button
+            className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('login');
+              setAlert(null);
+            }}
+          >
+            Login
+          </button>
+          <button
+            className={`auth-tab ${activeTab === 'register' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('register');
+              setAlert(null);
+            }}
+          >
+            Register
+          </button>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center', marginBottom: '2rem', borderBottom: 'var(--border-thin)', paddingBottom: '1rem' }}>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 500, letterSpacing: '0.05em' }}>CASHIER SIGN IN</h2>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+            Please authenticate using your pre-authorized cashier keys.
+          </p>
+        </div>
+      )}
 
       {/* Alert Notifications */}
       {alert && (
